@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" id="app">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records & Archive — Backyard Disc. Golf CC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+        --g-dark:  #173d2c;
+        --g-mid:   #245c40;
+        --g-light: #dff0e6;
+        --gold:    #c9a84c;
+        --gold-lt: #f0da8c;
+        --cream:   #faf7f0;
+        --cm-mid:  #f2ebe0;
+        --cm-dark: #e8dfc8;
+        --ink:     #1a1a1a;
+        --border:  #d4c9aa;
+        --body-bg: #1c3828;
+        --row-even:#fafaf5;
+        --row-hcp-bg:#f5f0e5;
+    }
+
+    body {
+        background: var(--body-bg);
+        background-image:
+            radial-gradient(ellipse at 20% 60%, rgba(35,80,55,0.5) 0%, transparent 55%),
+            radial-gradient(ellipse at 80% 20%, rgba(18,45,30,0.6) 0%, transparent 50%);
+        min-height: 100vh;
+        font-family: 'Source Sans 3', sans-serif;
+        padding: 28px 16px;
+    }
+
+    .wrapper { max-width: 1080px; margin: 0 auto; box-shadow: 0 24px 80px rgba(0,0,0,0.6); }
+
+    /* ── Header ── */
+    .hd {
+        background: var(--g-dark);
+        border: 2px solid var(--gold);
+        padding: 28px 44px 20px;
+        text-align: center;
+        position: relative;
+    }
+    .hd::before,.hd::after { content:''; position:absolute; top:0; bottom:0; width:2px; background:rgba(201,168,76,0.18); }
+    .hd::before { left:9px; } .hd::after { right:9px; }
+    .hd-orn  { color:rgba(201,168,76,0.4); font-size:1rem; letter-spacing:0.5em; margin-bottom:7px; }
+    .hd-club { font-family:'Cormorant Garamond',serif; font-size:0.8rem; color:rgba(201,168,76,0.58); letter-spacing:0.36em; text-transform:uppercase; margin-bottom:4px; }
+    .hd-ttl  { font-family:'Playfair Display',serif; font-size:2.1rem; color:var(--gold); letter-spacing:0.08em; line-height:1.1; }
+    .hd-rule { width:220px; height:1px; background:linear-gradient(to right,transparent,var(--gold),transparent); margin:13px auto 0; }
+
+    /* ── Nav bar ── */
+    .nav-bar {
+        background: #0f2a1e;
+        border-left: 2px solid var(--gold);
+        border-right: 2px solid var(--gold);
+        border-bottom: 1px solid rgba(201,168,76,0.2);
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .nav-back {
+        font-family: 'Playfair Display', serif;
+        font-size: 0.72rem;
+        color: rgba(201,168,76,0.6);
+        text-decoration: none;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        transition: color 0.14s;
+    }
+    .nav-back:hover { color: var(--gold); }
+    .nav-updated { font-size: 0.68rem; color: rgba(255,255,255,0.28); font-style: italic; }
+
+    /* ── Section container ── */
+    .rec-section {
+        background: var(--cream);
+        border-left: 2px solid var(--gold);
+        border-right: 2px solid var(--gold);
+        border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .rec-section-hd {
+        background: var(--g-dark);
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid rgba(201,168,76,0.25);
+    }
+    .rec-section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 0.8rem;
+        color: var(--gold);
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        flex: 1;
+    }
+    .rec-section-sub {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 0.78rem;
+        color: rgba(201,168,76,0.45);
+        font-style: italic;
+    }
+
+    /* ── Course sub-sections ── */
+    .course-block { padding: 18px 20px 22px; border-bottom: 1px solid var(--border); }
+    .course-block:last-child { border-bottom: none; }
+    .course-block-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 0.74rem;
+        color: var(--g-dark);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        opacity: 0.6;
+    }
+
+    /* ── Record holder summary ── */
+    .rec-holder-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 14px;
+        padding: 12px 16px;
+        background: var(--g-dark);
+        border: 1px solid rgba(201,168,76,0.3);
+        flex-wrap: wrap;
+    }
+    .rec-crown { font-size: 1.4rem; }
+    .rec-name  { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold-lt); font-weight: 700; }
+    .rec-score-wrap { display: flex; align-items: baseline; gap: 8px; }
+    .rec-total { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
+    .rec-diff  { font-size: 0.9rem; color: rgba(255,255,255,0.55); }
+    .rec-date  { font-family: 'Cormorant Garamond', serif; font-size: 0.82rem; color: rgba(255,255,255,0.4); font-style: italic; margin-left: auto; }
+
+    .rec-empty {
+        padding: 28px;
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        color: #999;
+        font-size: 0.95rem;
+    }
+
+    /* ── Composite note ── */
+    .composite-note {
+        font-size: 0.78rem;
+        color: #777;
+        margin-bottom: 12px;
+        font-style: italic;
+    }
+    .composite-note strong { font-style: normal; }
+
+    /* ── Scorecard table (read-only) ── */
+    .sc-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .sc-tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.77rem;
+        table-layout: fixed;
+        min-width: 640px;
+    }
+    .sc-tbl col.c-lbl  { width: 110px; }
+    .sc-tbl col.c-hole { width: 32px; }
+    .sc-tbl col.c-sub  { width: 48px; }
+    .sc-tbl col.c-tot  { width: 58px; }
+
+    .sc-tbl th, .sc-tbl td {
+        border: 1px solid var(--border);
+        text-align: center;
+        height: 30px;
+        padding: 0 2px;
+        overflow: hidden;
+    }
+
+    .lc  { background: var(--g-dark)!important; color: var(--gold)!important; font-family:'Playfair Display',serif; font-size:0.68rem!important; letter-spacing:0.1em; text-transform:uppercase; border-color:rgba(201,168,76,0.22)!important; }
+    .hh  { background: var(--g-dark); color: #fff; font-weight: 600; font-size: 0.75rem; }
+    .sh  { background: var(--g-mid); color: var(--gold-lt); font-family:'Playfair Display',serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; border-color:rgba(201,168,76,0.22)!important; }
+    .th  { background: var(--g-dark); color: var(--gold); font-family:'Playfair Display',serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; border-color:rgba(201,168,76,0.22)!important; }
+
+    .row-par td { background: var(--g-light); color: var(--g-dark); font-weight: 700; font-family:'Playfair Display',serif; }
+    .row-par .sv { background: #b2dcc2!important; font-weight:700; }
+    .row-par .tv { background: #94ccab!important; font-weight:700; }
+
+    .row-score td { background: #fff; color: var(--ink); font-weight: 600; }
+    .row-score .sv { background: var(--cm-mid)!important; font-weight: 700; }
+    .row-score .tv { background: var(--cm-dark)!important; font-weight: 700; font-size: 0.85rem; }
+
+    .row-holder td { background: var(--row-hcp-bg); color: #888; font-size: 0.65rem; font-style: italic; height: 22px; }
+    .row-holder .sv, .row-holder .tv { background: var(--cm-dark)!important; }
+
+    .sep { border-left: 2px solid var(--gold)!important; }
+
+    .c-eagle { background: #f5d44a!important; }
+    .c-birdie { background: #f7a8a8!important; }
+    .c-bogey  { background: #b8d4f0!important; }
+    .c-dbl    { background: #88b8e8!important; }
+    .c-worse  { background: #5c96d8!important; color: #fff!important; }
+
+    .t-lo { color: #b02020!important; } .t-hi { color: #1a5fa8!important; } .t-ev { color: #1a7a3c!important; }
+
+    /* ── Archive cards ── */
+    .archive-list { padding: 12px 16px; }
+    .archive-card {
+        border: 1px solid var(--border);
+        background: var(--cm-mid);
+        padding: 11px 14px;
+        margin-bottom: 8px;
+        transition: border-color 0.14s;
+    }
+    .archive-card:last-child { margin-bottom: 0; }
+    .archive-card:hover { border-color: var(--gold); }
+    .arch-top {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 5px;
+    }
+    .arch-name  { font-family:'Playfair Display',serif; font-size:0.86rem; color:var(--g-dark); font-weight:700; flex:1; min-width:140px; }
+    .arch-course{ font-size:0.7rem; color:#888; background:var(--g-light); padding:1px 6px; border-radius:2px; }
+    .arch-date  { font-size:0.7rem; color:#aaa; font-style:italic; margin-left:auto; }
+    .arch-players { font-size: 0.76rem; color: #555; }
+    .arch-player { font-weight: 600; color: var(--g-dark); }
+    .arch-score  { color: #888; }
+
+    /* ── Loading / setup ── */
+    .state-card {
+        background: var(--cream);
+        border: 2px solid var(--gold);
+        border-top: none;
+        padding: 48px 32px;
+        text-align: center;
+    }
+    .state-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        color: var(--g-dark);
+        margin-bottom: 12px;
+    }
+    .state-body { font-size: 0.84rem; color: #666; line-height: 1.7; }
+    .state-body code {
+        background: var(--cm-dark);
+        padding: 2px 6px;
+        border-radius: 2px;
+        font-size: 0.8rem;
+        color: var(--g-dark);
+    }
+    .setup-steps { text-align:left; max-width:480px; margin:16px auto 0; }
+    .setup-steps li { margin-bottom: 6px; font-size: 0.82rem; color: #555; }
+
+    /* ── Footer ── */
+    .ft {
+        background: var(--g-dark);
+        border: 2px solid var(--gold);
+        border-top: 1px solid rgba(201,168,76,0.3);
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .ft-quote { font-family:'Cormorant Garamond',serif; font-size:0.86rem; font-style:italic; color:rgba(201,168,76,0.45); letter-spacing:0.05em; }
+    .ft-btns  { display:flex; align-items:center; gap:5px; }
+
+    .btn { font-family:'Playfair Display',serif; font-size:0.67rem; letter-spacing:0.18em; text-transform:uppercase; padding:7px 14px; border-radius:1px; cursor:pointer; transition:all 0.16s; }
+    .btn-g { background:transparent; border:1px solid rgba(201,168,76,0.28); color:rgba(201,168,76,0.48); }
+    .btn-g:hover { border-color:var(--gold); color:var(--gold); }
+    .btn-s { background:transparent; border:1px solid var(--gold); color:var(--gold); }
+    .btn-s:hover { background:var(--gold); color:var(--g-dark); }
+    .btn-a { display:inline-flex; align-items:center; text-decoration:none; }
+
+    /* ── Toast ── */
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--g-dark); border:1px solid var(--gold); color:var(--gold); font-family:'Playfair Display',serif; font-size:0.78rem; letter-spacing:0.12em; padding:10px 24px; opacity:0; transition:opacity 0.25s, transform 0.25s; z-index:200; pointer-events:none; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media (max-width: 700px) {
+        body { padding: 6px 2px; }
+        .hd { padding: 16px 16px 12px; }
+        .hd-ttl { font-size: 1.4rem; }
+        .course-block { padding: 14px 12px 16px; }
+        .rec-holder-card { padding: 10px 12px; }
+        .rec-total { font-size: 1.2rem; }
+        .archive-list { padding: 10px 10px; }
+        .ft-quote { display: none; }
+    }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- Header -->
+<header class="hd">
+    <div class="hd-orn">✦ &nbsp; ✦ &nbsp; ✦</div>
+    <div class="hd-club">Backyard Disc. Golf Country Club</div>
+    <div class="hd-ttl">Records &amp; Archive</div>
+    <div class="hd-rule"></div>
+</header>
+
+<!-- Nav -->
+<div class="nav-bar">
+    <a href="index.html" class="nav-back">← Back to Scorecard</a>
+    <span class="nav-updated" id="last-updated"></span>
+</div>
+
+<!-- Loading state -->
+<div class="state-card" id="state-loading">
+    <div class="state-title">Loading records…</div>
+    <div class="state-body">Fetching rounds from the shared portal.</div>
+</div>
+
+<!-- Not configured state -->
+<div class="state-card" id="state-setup" style="display:none">
+    <div class="state-title">Firebase not configured yet</div>
+    <div class="state-body">
+        To share rounds between devices, you need a free Firebase Realtime Database.<br>
+        Then paste the URL into both <code>index.html</code> and <code>records.html</code> where it says <code>YOUR_FIREBASE_DB_URL_HERE</code>.
+        <ol class="setup-steps">
+            <li>Go to <strong>firebase.google.com</strong> and sign in with your Google account.</li>
+            <li>Click <strong>Add project</strong>, name it anything (e.g. "disc-golf"), skip analytics.</li>
+            <li>In the left sidebar, click <strong>Build → Realtime Database</strong>.</li>
+            <li>Click <strong>Create Database</strong>, choose a region, then select <strong>Start in test mode</strong>.</li>
+            <li>Copy the URL shown (looks like <code>https://disc-golf-default-rtdb.firebaseio.com</code>).</li>
+            <li>Paste it into both HTML files replacing <code>YOUR_FIREBASE_DB_URL_HERE</code>, then re-upload to GitHub.</li>
+        </ol>
+    </div>
+</div>
+
+<!-- Main content -->
+<div id="main-content" style="display:none">
+
+    <!-- ═══ COURSE RECORDS ═══ -->
+    <div class="rec-section">
+        <div class="rec-section-hd">
+            <span class="rec-section-title">🏆 Course Records</span>
+            <span class="rec-section-sub">Lowest complete round per course</span>
+        </div>
+        <div id="records-inner"></div>
+    </div>
+
+    <!-- ═══ DREAM CARD ═══ -->
+    <div class="rec-section">
+        <div class="rec-section-hd">
+            <span class="rec-section-title">✨ Dream Card</span>
+            <span class="rec-section-sub">Best score on each hole — compiled from all rounds</span>
+        </div>
+        <div id="dreamcard-inner"></div>
+    </div>
+
+    <!-- ═══ ARCHIVE ═══ -->
+    <div class="rec-section">
+        <div class="rec-section-hd">
+            <span class="rec-section-title">📁 All Rounds Archive</span>
+            <span class="rec-section-sub">Every saved round from all players</span>
+        </div>
+        <div id="archive-inner"></div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="ft">
+    <span class="ft-quote">Play well &bull; Enjoy the course &bull; Good sportsmanship always</span>
+    <div class="ft-btns">
+        <button class="btn btn-g" onclick="loadRecords()">↻ Refresh</button>
+        <a href="index.html" class="btn btn-s btn-a">← Scorecard</a>
+    </div>
+</footer>
+
+</div><!-- /wrapper -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+// ════════════════════════════════════════════════════════════════
+// FIREBASE CONFIG — paste the same URL you put in index.html
+// ════════════════════════════════════════════════════════════════
+const FIREBASE_DB_URL = 'YOUR_FIREBASE_DB_URL_HERE';
+
+const COURSES = [
+    { id:0, name:'67',        pars:[3,3,3,3,5,5,3,3,6, 4,5,3,3,3,4,3,5,3], hdcps:[15,16,14,11,6,4,17,10,5, 9,2,18,13,7,3,8,1,12] },
+    { id:1, name:'High Noon', pars:[3,3,3,3,3,3,3,3,3, 3,3,3,3,3,3,3,3,3], hdcps:[1,2,3,4,5,6,7,8,9, 10,11,12,13,14,15,16,17,18] }
+];
+
+// ════════════════════════════════════════════════════════════════
+// LOAD
+// ════════════════════════════════════════════════════════════════
+async function loadRecords() {
+    document.getElementById('state-loading').style.display = '';
+    document.getElementById('state-setup').style.display   = 'none';
+    document.getElementById('main-content').style.display  = 'none';
+
+    if (!FIREBASE_DB_URL || FIREBASE_DB_URL === 'YOUR_FIREBASE_DB_URL_HERE') {
+        document.getElementById('state-loading').style.display = 'none';
+        document.getElementById('state-setup').style.display   = '';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${FIREBASE_DB_URL}/rounds.json`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const rounds = data ? Object.values(data).filter(Boolean) : [];
+
+        document.getElementById('state-loading').style.display = 'none';
+        document.getElementById('main-content').style.display  = '';
+        document.getElementById('last-updated').textContent =
+            `Updated ${new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}`;
+
+        renderCourseRecords(rounds);
+        renderDreamCard(rounds);
+        renderArchive(rounds);
+    } catch(err) {
+        document.getElementById('state-loading').innerHTML =
+            `<div class="state-title">Could not load records</div><div class="state-body">Check your Firebase URL and database rules.<br><small>${esc(err.message)}</small></div>`;
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+// COURSE RECORDS
+// ════════════════════════════════════════════════════════════════
+function renderCourseRecords(rounds) {
+    const el = document.getElementById('records-inner');
+    el.innerHTML = '';
+
+    COURSES.forEach(course => {
+        const block = document.createElement('div');
+        block.className = 'course-block';
+
+        const title = document.createElement('div');
+        title.className = 'course-block-title';
+        title.textContent = `Course: ${course.name}`;
+        block.appendChild(title);
+
+        // Find best complete player-round
+        let best = null;
+        let bestTotal = Infinity;
+
+        rounds.filter(r => r.courseId === course.id).forEach(round => {
+            (round.players || []).forEach(player => {
+                const scores = (player.scores || []).map(Number);
+                if (scores.length < 18 || scores.some(s => !s || s <= 0)) return;
+                const total = scores.reduce((a, b) => a + b, 0);
+                if (total < bestTotal) {
+                    bestTotal = total;
+                    best = { player, round, total, scores };
+                }
+            });
+        });
+
+        if (!best) {
+            const empty = document.createElement('div');
+            empty.className = 'rec-empty';
+            empty.textContent = 'No complete rounds recorded yet. Play a full round and hit Save!';
+            block.appendChild(empty);
+        } else {
+            const par = course.pars.reduce((a, b) => a + b, 0);
+            const diff = bestTotal - par;
+            const diffStr = diff === 0 ? 'E' : (diff > 0 ? '+' : '') + diff;
+
+            const card = document.createElement('div');
+            card.className = 'rec-holder-card';
+            card.innerHTML = `
+                <span class="rec-crown">🏆</span>
+                <span class="rec-name">${esc(best.player.name)}</span>
+                <div class="rec-score-wrap">
+                    <span class="rec-total ${diff < 0 ? 't-lo' : diff > 0 ? 't-hi' : 't-ev'}">${bestTotal}</span>
+                    <span class="rec-diff">(${diffStr})</span>
+                </div>
+                <span class="rec-date">${fmtDate(best.round.savedAt)} &mdash; ${esc(best.round.name)}</span>
+            `;
+            block.appendChild(card);
+            block.appendChild(buildScorecard(course, [{ name: best.player.name, scores: best.scores }], false));
+        }
+
+        el.appendChild(block);
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// DREAM CARD
+// ════════════════════════════════════════════════════════════════
+function renderDreamCard(rounds) {
+    const el = document.getElementById('dreamcard-inner');
+    el.innerHTML = '';
+
+    COURSES.forEach(course => {
+        const block = document.createElement('div');
+        block.className = 'course-block';
+
+        const title = document.createElement('div');
+        title.className = 'course-block-title';
+        title.textContent = `Course: ${course.name}`;
+        block.appendChild(title);
+
+        // For each hole, find minimum score and who holds it
+        const bestPerHole = Array.from({ length: 18 }, () => ({ score: Infinity, holder: '' }));
+
+        rounds.filter(r => r.courseId === course.id).forEach(round => {
+            (round.players || []).forEach(player => {
+                (player.scores || []).forEach((s, h) => {
+                    const score = Number(s);
+                    if (!score || score <= 0 || h >= 18) return;
+                    if (score < bestPerHole[h].score) {
+                        bestPerHole[h] = { score, holder: player.name || 'Unknown' };
+                    }
+                });
+            });
+        });
+
+        const hasAny = bestPerHole.some(b => b.score !== Infinity);
+
+        if (!hasAny) {
+            const empty = document.createElement('div');
+            empty.className = 'rec-empty';
+            empty.textContent = 'No rounds recorded for this course yet.';
+            block.appendChild(empty);
+        } else {
+            const scores = bestPerHole.map(b => b.score === Infinity ? '' : b.score);
+            const holders = bestPerHole.map(b => b.score === Infinity ? '' : b.holder);
+            const filledScores = scores.filter(s => s !== '').map(Number);
+            const compositeTotal = filledScores.reduce((a, b) => a + b, 0);
+            const par = course.pars.reduce((a, b) => a + b, 0);
+            const diff = compositeTotal - par;
+            const diffStr = diff === 0 ? 'E' : (diff > 0 ? '+' : '') + diff;
+
+            const note = document.createElement('div');
+            note.className = 'composite-note';
+            note.innerHTML = `Theoretical best total: <strong class="${diff < 0 ? 't-lo' : diff > 0 ? 't-hi' : 't-ev'}">${compositeTotal} (${diffStr})</strong> — compiled from best scores across all rounds`;
+            block.appendChild(note);
+
+            block.appendChild(buildScorecard(course, [{ name: 'Dream Card', scores }], true, holders));
+        }
+
+        el.appendChild(block);
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// ARCHIVE
+// ════════════════════════════════════════════════════════════════
+function renderArchive(rounds) {
+    const el = document.getElementById('archive-inner');
+    el.innerHTML = '';
+
+    if (!rounds.length) {
+        el.innerHTML = '<div class="rec-empty">No rounds saved yet. Go play!</div>';
+        return;
+    }
+
+    const sorted = [...rounds].sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+    const list = document.createElement('div');
+    list.className = 'archive-list';
+
+    sorted.forEach(round => {
+        const course = COURSES.find(c => c.id === round.courseId);
+        const par = course ? course.pars.reduce((a, b) => a + b, 0) : null;
+
+        const playerParts = (round.players || []).map(p => {
+            const scores = (p.scores || []).map(Number).filter(s => s > 0);
+            const total = scores.length === 18 ? scores.reduce((a, b) => a + b, 0) : null;
+            const diff = total !== null && par !== null ? total - par : null;
+            const diffStr = diff === null ? '' : ` (${diff === 0 ? 'E' : (diff > 0 ? '+' : '') + diff})`;
+            const cls = diff === null ? '' : diff < 0 ? 't-lo' : diff > 0 ? 't-hi' : 't-ev';
+            return `<span class="arch-player">${esc(p.name || 'Unknown')}</span>`
+                + (total !== null ? ` <span class="arch-score ${cls}">${total}${diffStr}</span>` : '');
+        }).join(' &nbsp;&middot;&nbsp; ');
+
+        const card = document.createElement('div');
+        card.className = 'archive-card';
+        card.innerHTML = `
+            <div class="arch-top">
+                <span class="arch-name">${esc(round.name)}</span>
+                <span class="arch-course">${esc(round.courseName || '')}</span>
+                <span class="arch-date">${fmtDate(round.savedAt)}</span>
+            </div>
+            <div class="arch-players">${playerParts}</div>
+        `;
+        list.appendChild(card);
+    });
+
+    el.appendChild(list);
+}
+
+// ════════════════════════════════════════════════════════════════
+// SCORECARD TABLE BUILDER
+// ════════════════════════════════════════════════════════════════
+function buildScorecard(course, players, showHolders, holders) {
+    const PARS  = course.pars;
+    const FP = PARS.slice(0,9).reduce((a,b)=>a+b,0);
+    const BP = PARS.slice(9).reduce((a,b)=>a+b,0);
+    const TP = FP + BP;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'sc-wrap';
+
+    const tbl = document.createElement('table');
+    tbl.className = 'sc-tbl';
+
+    // colgroup
+    const cg = document.createElement('colgroup');
+    const addCol = cls => { const c=document.createElement('col'); c.className=cls; cg.appendChild(c); };
+    addCol('c-lbl');
+    for (let i=0;i<9;i++) addCol('c-hole');
+    addCol('c-sub');
+    for (let i=0;i<9;i++) addCol('c-hole');
+    addCol('c-sub');
+    addCol('c-tot');
+    tbl.appendChild(cg);
+
+    // Hole header
+    const hr = tbl.insertRow();
+    mkTh(hr,'Hole','lc');
+    for (let h=1;h<=9;h++) mkTh(hr,h,'hh');
+    mkTh(hr,'OUT','sh');
+    for (let h=10;h<=18;h++) mkTh(hr,h,'hh'+(h===10?' sep':''));
+    mkTh(hr,'IN','sh');
+    mkTh(hr,'TOT','th');
+
+    // Par row
+    const pr = tbl.insertRow(); pr.className = 'row-par';
+    mkTd(pr,'Par','lc');
+    for (let i=0;i<9;i++) mkTd(pr,PARS[i]);
+    mkTd(pr,FP,'sv');
+    for (let i=9;i<18;i++) mkTd(pr,PARS[i],i===9?'sep':'');
+    mkTd(pr,BP,'sv');
+    mkTd(pr,TP,'tv');
+
+    // Player rows
+    players.forEach(player => {
+        const scores = (player.scores || []).map(s => s===''||s===null||s===undefined ? null : Number(s));
+        const fs = scores.slice(0,9).filter(s=>s!==null);
+        const bs = scores.slice(9).filter(s=>s!==null);
+        const fSum = fs.reduce((a,b)=>a+b,0);
+        const bSum = bs.reduce((a,b)=>a+b,0);
+        const total = fs.length + bs.length === 18 ? fSum + bSum : null;
+
+        const tr = tbl.insertRow(); tr.className = 'row-score';
+        mkTd(tr, player.name, 'lc');
+
+        for (let i=0;i<18;i++) {
+            const s = scores[i];
+            const cell = document.createElement('td');
+            if (i===9) cell.classList.add('sep');
+            if (s !== null) {
+                cell.textContent = s;
+                const d = s - PARS[i];
+                if      (d<=-2) cell.classList.add('c-eagle');
+                else if (d===-1) cell.classList.add('c-birdie');
+                else if (d===1)  cell.classList.add('c-bogey');
+                else if (d===2)  cell.classList.add('c-dbl');
+                else if (d>=3)   cell.classList.add('c-worse');
+            } else {
+                cell.textContent = '—';
+                cell.style.color = '#ccc';
+            }
+            tr.appendChild(cell);
+            if (i===8) {
+                const outTd = document.createElement('td');
+                outTd.className = 'sv';
+                outTd.textContent = fs.length ? fSum : '—';
+                if (fs.length===9) { const d=fSum-FP; outTd.classList.add(d<0?'t-lo':d>0?'t-hi':'t-ev'); }
+                tr.appendChild(outTd);
+            }
+        }
+
+        const inTd = document.createElement('td'); inTd.className='sv';
+        inTd.textContent = bs.length ? bSum : '—';
+        if (bs.length===9) { const d=bSum-BP; inTd.classList.add(d<0?'t-lo':d>0?'t-hi':'t-ev'); }
+        tr.appendChild(inTd);
+
+        const totTd = document.createElement('td'); totTd.className='tv';
+        if (total !== null) {
+            const diff = total - TP;
+            totTd.textContent = `${total} (${diff===0?'E':(diff>0?'+':'')+diff})`;
+            totTd.classList.add(diff<0?'t-lo':diff>0?'t-hi':'t-ev');
+        } else {
+            totTd.textContent = '—';
+        }
+        tr.appendChild(totTd);
+
+        // Holder row for dream card
+        if (showHolders && holders) {
+            const hr2 = tbl.insertRow(); hr2.className = 'row-holder';
+            mkTd(hr2,'','lc');
+            for (let i=0;i<18;i++) {
+                const htd = document.createElement('td');
+                if (i===9) htd.classList.add('sep');
+                htd.textContent = holders[i] || '';
+                hr2.appendChild(htd);
+                if (i===8) { const e=document.createElement('td'); e.className='sv'; hr2.appendChild(e); }
+            }
+            const he1=document.createElement('td'); he1.className='sv'; hr2.appendChild(he1);
+            const he2=document.createElement('td'); he2.className='tv'; hr2.appendChild(he2);
+        }
+    });
+
+    wrap.appendChild(tbl);
+    return wrap;
+}
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+function mkTh(tr, txt, cls) {
+    const el = document.createElement('th'); el.textContent = txt;
+    cls && cls.trim().split(/\s+/).forEach(c => c && el.classList.add(c));
+    tr.appendChild(el);
+}
+function mkTd(tr, txt, cls) {
+    const el = document.createElement('td'); el.textContent = txt;
+    cls && cls.trim().split(/\s+/).forEach(c => c && el.classList.add(c));
+    tr.appendChild(el);
+    return el;
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(iso) {
+    return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+let toastTimer;
+function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+loadRecords();
+</script>
+</body>
+</html>
